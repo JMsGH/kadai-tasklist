@@ -12,6 +12,11 @@
                     {!! Form::label('description', 'タスク:') !!}
                     {!! Form::text('description', null, ['class' => 'form-control']) !!}
                 </div>
+                
+                <div class="form-group">
+                    {!! Form::label('status', 'ステータス:') !!}
+                    {!! Form::text('status', null, ['class' => 'form-control']) !!}
+                </div>
 
                 {!! Form::submit('更新', ['class' => 'btn btn-outline-primary']) !!}
 

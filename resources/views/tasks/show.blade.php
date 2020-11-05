@@ -13,6 +13,10 @@
                 <td>タスク</td>
                 <td>{{ $task->description }}</td>
             </tr>
+            <tr>
+                <td>ステータス</td>
+                <td>{{ $task->status }}</td>
+            </tr>
     </table>
     
     {{-- メッセージ編集ページへのリンク --}}
