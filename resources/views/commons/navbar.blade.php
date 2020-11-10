@@ -13,9 +13,10 @@
                         {{-- タスク作成ページへのリンク --}}
                         <li class="nav-item">{!! link_to_route('tasks.create', '新規タスクを作成', [], ['class' => 'nav-link']) !!}</li>
                         {{-- ユーザ登録ページへのリンク --}}
-                        <li class="nav-item"><a href="#" class="nav-link">登録</a></li>
+                        <li class="nav-item">{!! link_to_route('signup.get', '登録', [], ['class' => 'nav-link']) !!}</li>
                         {{-- ログインページへのリンク --}}
-                        <li class="nav-item"><a href="#" class="nav-link">ログイン</a></li>
+                        <li class="nav-item">{!! link_to_route('login', 'ログイン', [], ['class' => 'nav-link']) !!}</li>
+
                     </ul>
                 </div>
             </nav>
