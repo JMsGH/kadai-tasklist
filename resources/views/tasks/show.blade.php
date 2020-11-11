@@ -27,4 +27,5 @@
         {!! Form::submit('このタスクを削除', ['class' => 'btn btn-outline-danger']) !!}
     {!! Form::close() !!}
 
+
 @endsection

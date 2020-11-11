@@ -91,12 +91,23 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $task = Task::find($id);
         
-        // タスクを詳細ビューで表示
-        return view('tasks.show', [
+        if ((Task::find($id) == null) || 
+            (\Auth::user()->id) != ($task->user_id)
+            ) 
+            { // 他ユーザのタスクを表示しようとした場合
+            
+            // welcomeページへリダイレクト
+            return view('welcome');
+        }
+        else 
+        {
+            // タスクを詳細ビューで表示
+            return view('tasks.show', [
             'task' => $task,
-        ]);
+            ]);
+        }
     }
 
     /**
@@ -165,7 +176,18 @@ class TasksController extends Controller
         //タスクを削除
         $task->delete();
         
-        // トップページへリダイレクト
-        return redirect('/');
+        // タスク一覧ページを表示
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザのタスクの一覧を作成日の昇順で取得
+            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+            
+        }
+        
+        // タスク一覧ビューでそれを表示
+            return view('tasks.index', [
+                'tasks' => $tasks
+            ]);
     }
 }
