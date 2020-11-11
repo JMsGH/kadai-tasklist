@@ -11,12 +11,20 @@ class TasksController extends Controller
     // getでtasks/にアクセスされた場合の一覧表示処理
     public function index()
     {
-        $tasks = Task::all();
-    
+
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザのタスクの一覧を作成日の昇順で取得
+            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+            
+        }
+        
         // タスク一覧ビューでそれを表示
-        return view('tasks.index', [
-            'tasks' => $tasks,  
-        ]);
+            return view('tasks.index', [
+                'tasks' => $tasks
+            ]);
+        
     }
 
     /**
@@ -50,14 +58,29 @@ class TasksController extends Controller
             'status' => 'required | max:10',
         ]);
         
-        // タスクを作成
-        $task = new Task;
-        $task->description = $request->description;
-        $task->status = $request->status;
-        $task->save();
+        // 認証済みユーザ（閲覧者）のタスクとして作成（リクエストされた値をもとに作成）
+        $request->user()->tasks()->create([
+            
+            'description' => $request->description,
+            'status' => $request->status
+        ]);
+        
 
-        // トップページへリダイレクトさせる
-        return redirect('/');
+        // 前のURLへリダイレクトさせる
+        // return back();
+        
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザのタスクの一覧を作成日の昇順で取得
+            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+            
+        }
+        
+        // タスク一覧ビューでそれを表示
+            return view('tasks.index', [
+                'tasks' => $tasks
+            ]);
     }
 
     /**
@@ -115,8 +138,19 @@ class TasksController extends Controller
         $task->status = $request->status;
         $task->save();
         
-        // トップページへリダイレクト
-        return redirect('/');
+        // タスク一覧ページを表示
+        if (\Auth::check()) { // 認証済みの場合
+            // 認証済みユーザを取得
+            $user = \Auth::user();
+            // ユーザのタスクの一覧を作成日の昇順で取得
+            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+            
+        }
+        
+        // タスク一覧ビューでそれを表示
+            return view('tasks.index', [
+                'tasks' => $tasks
+            ]);
     }
 
     /**
