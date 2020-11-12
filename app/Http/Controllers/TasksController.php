@@ -11,19 +11,22 @@ class TasksController extends Controller
     // getでtasks/にアクセスされた場合の一覧表示処理
     public function index()
     {
-
-        if (\Auth::check()) { // 認証済みの場合
+        if (!\Auth::check()) 
+        {
+            return view('welcome');
+        }
+        
+        else { // 認証済みの場合
             // 認証済みユーザを取得
             $user = \Auth::user();
             // ユーザのタスクの一覧を作成日の昇順で取得
             $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
-            
-        }
         
         // タスク一覧ビューでそれを表示
             return view('tasks.index', [
                 'tasks' => $tasks
             ]);
+        }
         
     }
 
@@ -34,12 +37,20 @@ class TasksController extends Controller
      */
     public function create()
     {
-        $task = new Task;
+        if (!\Auth::check()) 
+        {
+            return view('welcome');
+        }
         
-        // タスク作成ビューを表示
-        return view('tasks.create', [
+        else
+        {
+            $task = new Task;
+        
+            // タスク作成ビューを表示
+            return view('tasks.create', [
             'task' => $task,    
-        ]);
+            ]);
+        }
     }
 
     /**
@@ -65,22 +76,8 @@ class TasksController extends Controller
             'status' => $request->status
         ]);
         
-
-        // 前のURLへリダイレクトさせる
-        // return back();
-        
-        if (\Auth::check()) { // 認証済みの場合
-            // 認証済みユーザを取得
-            $user = \Auth::user();
-            // ユーザのタスクの一覧を作成日の昇順で取得
-            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
-            
-        }
-        
-        // タスク一覧ビューでそれを表示
-            return view('tasks.index', [
-                'tasks' => $tasks
-            ]);
+       // トップページ（index）へリダイレクト
+            return $this->index();
     }
 
     /**
@@ -96,10 +93,10 @@ class TasksController extends Controller
         if ((Task::find($id) == null) || 
             (\Auth::user()->id) != ($task->user_id)
             ) 
-            { // 他ユーザのタスクを表示しようとした場合
+            { // 該当するタスクidが存在しない場合と他ユーザのタスクを表示しようとした場合
             
-            // welcomeページへリダイレクト
-            return view('welcome');
+            // トップページ（index）へリダイレクト
+            return $this->index();
         }
         else 
         {
@@ -118,12 +115,24 @@ class TasksController extends Controller
      */
     public function edit($id)
     {
-        $task = Task::findOrFail($id);
-
-        // タスクを編集ビューで表示
-        return view('tasks.edit', [
+        $task = Task::find($id);
+        
+        if ((Task::find($id) == null) || 
+            (!\Auth::check()) || 
+            (\Auth::user()->id) != ($task->user_id)
+            )
+        {
+            // トップページ（index）へリダイレクト
+            return $this->index();
+        }
+        
+        else
+        {
+            // タスクを編集ビューで表示
+            return view('tasks.edit', [
             'task' => $task,
-        ]);
+            ]);
+        }
     }
 
     /**
@@ -149,19 +158,8 @@ class TasksController extends Controller
         $task->status = $request->status;
         $task->save();
         
-        // タスク一覧ページを表示
-        if (\Auth::check()) { // 認証済みの場合
-            // 認証済みユーザを取得
-            $user = \Auth::user();
-            // ユーザのタスクの一覧を作成日の昇順で取得
-            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
-            
-        }
-        
-        // タスク一覧ビューでそれを表示
-            return view('tasks.index', [
-                'tasks' => $tasks
-            ]);
+        // トップページ（index）へリダイレクト
+            return $this->index();
     }
 
     /**
@@ -176,18 +174,7 @@ class TasksController extends Controller
         //タスクを削除
         $task->delete();
         
-        // タスク一覧ページを表示
-        if (\Auth::check()) { // 認証済みの場合
-            // 認証済みユーザを取得
-            $user = \Auth::user();
-            // ユーザのタスクの一覧を作成日の昇順で取得
-            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
-            
-        }
-        
-        // タスク一覧ビューでそれを表示
-            return view('tasks.index', [
-                'tasks' => $tasks
-            ]);
+        // トップページ（index）へリダイレクト
+            return $this->index();
     }
 }

@@ -39,7 +39,7 @@
         </table>
         
         <div class="alert alert-secondary" role="alert">
-            タスクを編集するにはタスクidをクリックします。
+            タスクを編集するにはタスクid番号をクリックします。
         </div>
         
     @else

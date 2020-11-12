@@ -12,9 +12,7 @@
 */
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'TasksController@index')->name('tasks.get');
 
 Route::get('/tasks/index', 'TasksController@index')->name('tasks.get');
 Route::post('/tasks/index', 'TasksController@index')->name('tasks.get');
