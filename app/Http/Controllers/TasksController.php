@@ -77,7 +77,7 @@ class TasksController extends Controller
         ]);
         
        // トップページ（index）へリダイレクト
-            return $this->index();
+            return redirect('/');
     }
 
     /**
@@ -96,7 +96,7 @@ class TasksController extends Controller
             { // 該当するタスクidが存在しない場合と他ユーザのタスクを表示しようとした場合
             
             // トップページ（index）へリダイレクト
-            return $this->index();
+            return redirect('/');
         }
         else 
         {
@@ -123,7 +123,7 @@ class TasksController extends Controller
             )
         {
             // トップページ（index）へリダイレクト
-            return $this->index();
+            return redirect('/');
         }
         
         else
@@ -159,7 +159,7 @@ class TasksController extends Controller
         $task->save();
         
         // トップページ（index）へリダイレクト
-            return $this->index();
+            return redirect('/');
     }
 
     /**
@@ -175,6 +175,6 @@ class TasksController extends Controller
         $task->delete();
         
         // トップページ（index）へリダイレクト
-            return $this->index();
+            return redirect('/');
     }
 }
