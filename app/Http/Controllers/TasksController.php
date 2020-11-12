@@ -11,12 +11,8 @@ class TasksController extends Controller
     // getでtasks/にアクセスされた場合の一覧表示処理
     public function index()
     {
-        if (!\Auth::check()) 
-        {
-            return view('welcome');
-        }
-        
-        else { // 認証済みの場合
+        if (\Auth::check()){
+         // 認証済みの場合
             // 認証済みユーザを取得
             $user = \Auth::user();
             // ユーザのタスクの一覧を作成日の昇順で取得
@@ -26,7 +22,10 @@ class TasksController extends Controller
             return view('tasks.index', [
                 'tasks' => $tasks
             ]);
+        } else {
+            return view('welcome');
         }
+    
         
     }
 
@@ -37,20 +36,14 @@ class TasksController extends Controller
      */
     public function create()
     {
-        if (!\Auth::check()) 
-        {
-            return view('welcome');
-        }
-        
-        else
-        {
+       
             $task = new Task;
         
             // タスク作成ビューを表示
             return view('tasks.create', [
             'task' => $task,    
             ]);
-        }
+        
     }
 
     /**
@@ -118,7 +111,6 @@ class TasksController extends Controller
         $task = Task::find($id);
         
         if ((Task::find($id) == null) || 
-            (!\Auth::check()) || 
             (\Auth::user()->id) != ($task->user_id)
             )
         {
@@ -170,11 +162,23 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
-        //タスクを削除
-        $task->delete();
+        $task = Task::find($id);
         
-        // トップページ（index）へリダイレクト
+        if ((Task::find($id) == null) || 
+            (\Auth::user()->id) != ($task->user_id)
+            )
+        {
+            // トップページ（index）へリダイレクト
             return redirect('/');
+        }
+        
+        else
+        {
+            //タスクを削除
+            $task->delete();
+        
+            // トップページ（index）へリダイレクト
+            return redirect('/');
+        }
     }
 }
